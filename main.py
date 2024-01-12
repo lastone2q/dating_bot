@@ -9,6 +9,8 @@ from aiogram.enums import ParseMode
 
 from markups import Markups 
 from db_1 import Database
+from session_service import SessionService as SS, Functions as FC
+
 
 dp = Dispatcher()
 db = Database("sqlite:///db_for_bot.db")
@@ -22,8 +24,18 @@ async def main():
 @dp.message(Command('start'))
 async def start(message: types.Message):
     if db.check_status(message.from_user.username) == "Null":
+        config = SS(message.from_user.id)
+        config.cnt = 6
+        config.state = "registering"
+        config.user_date = 1065819600.0
+        config.user_disc = "Старий Хуй маринований"
+        config.user_interes = "girls"
+        config.user_location =  "Тернопіль, Тернопільська область"
+        config.user_name = "Shpintal"
+        config.user_sex = "boy"
+        config.user_media = "[id1,id2]"
         try:
-            db.add_user_data(message.from_user.id, 6, "registering", 1065819600.0, "Старий Хуй маринований", "girls", "Тернопіль, Тернопільська область", "Shpintal",  "boy", "id1,id2" )
+            db.add_user_data(config)
         except:
             pass
         if message.chat.type == "private":
@@ -44,6 +56,7 @@ async def start(message: types.Message):
                     db.add_user(message.from_user.id, username=message.from_user.username)
 
             await message.answer(text= "Hallo Moto", reply_markup= Markups.builder_ref.as_markup())
+            db.update_state(message.from_user.id, 'verificated')
     else:
         await message.answer(text= "Вы забанены🤷‍♂️")
             
@@ -51,7 +64,7 @@ async def start(message: types.Message):
 @dp.callback_query(F.data == "ref")
 async def  bot_message(call):
     await call.message.answer(text = f"Ваша реферальная ссылка:\nhttps://t.me/{cfg.bot_nickname}?start={call.from_user.id}\nКоличество рефералов: {db.count_referrals(call.from_user.id)}")
-
+    FC.show_data(call.from_user.id)
 
 @dp.message(Command('admin'))
 async def admin_panel(message: types.Message):

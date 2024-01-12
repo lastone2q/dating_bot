@@ -86,9 +86,17 @@ class Database:
             return "Null"
         session.close()
 
-    def add_user_data(self, user_id, cnt, state, user_date, user_disc , user_interes , user_location, user_name, user_sex, user_media):
+    def add_user_data(self, config):
         session = self.Session()
-        new_user_data = UserData(user_id=user_id, cnt=cnt, state=state, user_date=user_date, user_disc=user_disc,user_interes=user_interes,user_location=user_location, user_name=user_name, user_sex=user_sex, user_media=user_media)
+        new_user_data = UserData(user_id=config.user_id, cnt=config.cnt, state=config.state, user_date=config.user_date, user_disc=config.user_disc,user_interes=config.user_interes,user_location=config.user_location, user_name=config.user_name, user_sex=config.user_sex, user_media=config.user_media)
         session.add(new_user_data)
         session.commit()
         session.close()
+    
+    def update_state(self, user_id, state):
+        session = self.Session()
+        user_to_update = session.query(UserData).filter_by(user_id=user_id).first()
+        if user_to_update:
+            user_to_update.state = state
+            session.commit()
+            session.close()
