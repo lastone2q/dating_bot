@@ -82,7 +82,9 @@ class Database:
         user_check = session.query(User).filter_by(username=username).first()
         if not user_check:
             return "Null"
-        if user_check.status == "Null":
+        if user_check.status == "Null" or user_check.status == "":
+            return "Null"
+        if not user_check.status:
             return "Null"
         session.close()
 
@@ -100,3 +102,17 @@ class Database:
             user_to_update.state = state
             session.commit()
             session.close()
+    
+    def get_user_data(self, user_id):
+        session = self.Session()
+        user_data = session.query(UserData).filter_by(user_id=user_id).first()
+        if user_data:
+            data = [user_data.user_disc, user_data.user_interes, user_data.user_location, user_data.user_name,user_data.user_media]
+            return data
+    
+    def check_state(self, user_id):
+        session = self.Session()
+        user_to_update = session.query(UserData).filter_by(state = "registering", user_id = user_id).first()
+        if user_to_update:
+            return user_to_update.state
+            

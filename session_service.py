@@ -13,9 +13,5 @@ class SessionService():
             cls._instances[user_id].user_name = ""
             cls._instances[user_id].user_sex = ""
             cls._instances[user_id].user_media = ""
+            cls._instances[user_id].message_id = ""
         return cls._instances[user_id]
-
-class Functions():    
-    def show_data(user_id):
-        config = SessionService(user_id)
-        print(config.user_id,"\n", config.cnt, "\n",config.state, "\n",config.user_disc ,"\n", config.user_date,"\n", config.user_interes, "\n",config.user_location,"\n", config.user_name,"\n", config.user_sex,"\n", config.user_media )
